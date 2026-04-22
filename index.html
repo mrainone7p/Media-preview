@@ -144,13 +144,15 @@ const DEFAULT_FEEDS = [
 ];
 
 // ── Proxy fetch ──────────────────────────────────────────────────────────────
-// When served from the Docker nginx, all iCal requests go through /proxy?url=
-// to avoid browser CORS blocks. Falls back to direct fetch for local dev.
+// iCal requests go through /proxy/<scheme>/<host:port>/<path> to avoid CORS.
+// Using a path-based URL (not ?url=encoded) so nginx never sees a percent-
+// encoded URL in proxy_pass, which would trigger "invalid URL prefix" errors.
 function proxyFetch(url) {
   if (window.location.protocol === 'file:') {
     return fetch(url); // local dev: try direct
   }
-  return fetch('/proxy?url=' + encodeURIComponent(url));
+  // http://host:port/path?q=v  ->  /proxy/http/host:port/path?q=v
+  return fetch('/proxy/' + url.replace(/^(https?):\/\//, '$1/'));
 }
 
 // ── iCal parser ──────────────────────────────────────────────────────────────
