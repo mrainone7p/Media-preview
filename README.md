@@ -1,133 +1,125 @@
-# *arr Calendar
+# \*arr Calendar
 
-A self-hosted web calendar that aggregates iCal feeds from Sonarr, Radarr, Lidarr, and any other \*arr app. Click any item for a rich content card with poster, trailer, and description via TMDB.
+A self-hosted media calendar that aggregates iCal feeds from Sonarr, Radarr, Lidarr, and any other \*arr app into a single month view. Click any event for a rich content card with poster, trailer, rating, and overview via TMDB.
 
-![Preview](https://img.shields.io/badge/docker-ready-blue?logo=docker)
-![License](https://img.shields.io/badge/license-MIT-green)
+![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker)
+![nginx](https://img.shields.io/badge/served_by-nginx-green?logo=nginx)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ---
 
 ## Features
 
-- Month calendar with colour-coded feeds per service
+- Month calendar with colour-coded events per feed
 - Click any event → TMDB content card (poster · trailer · rating · overview)
-- Configurable auto-sync (15 min – 24 hr, default 24 hr)
-- Custom server name + logo
-- Built-in CORS proxy — no changes needed to your \*arr config
-- Fully static — served by nginx, zero backend
+- Built-in CORS proxy — paste your `.ics` URL as-is, no \*arr config changes needed
+- Auto-sync on a configurable interval (15 min – 24 hr)
+- Custom server name and logo
+- Fully static — single `index.html` served by nginx, zero backend or build step
+- Demo mode with sample events when no feeds are configured
 
 ---
 
-## Quick start (Docker Compose)
+## Quick start
 
-### 1 · Clone the repo
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and Docker Compose (v2 — `docker compose`)
+
+### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/arr-calendar.git
-cd arr-calendar
+git clone https://github.com/mrainone7p/media-preview.git
+cd media-preview
 ```
 
-### 2 · Start the container
+### 2. Start the container
 
 ```bash
 docker compose up -d
 ```
 
-Open **http://localhost:8096** (or replace `localhost` with your server IP).
+Open **http://localhost:8096** in your browser (or replace `localhost` with your server's IP).
 
-### 3 · Add your feeds
+### 3. Add your \*arr feeds
 
-Go to **Settings → iCal Feeds** and paste your \*arr URLs, e.g.:
+Go to **Settings → iCal Feeds** and paste your feed URLs:
 
-| App     | URL pattern |
-|---------|-------------|
-| Sonarr  | `http://192.168.1.x:8989/sonarr/feed/v3/calendar/Sonarr.ics?apikey=YOUR_KEY` |
-| Radarr  | `http://192.168.1.x:7878/radarr/feed/v3/calendar/Radarr.ics?apikey=YOUR_KEY` |
-| Lidarr  | `http://192.168.1.x:8686/lidarr/feed/v3/calendar/Lidarr.ics?apikey=YOUR_KEY` |
+| App    | Default port | URL pattern                                                                    |
+|--------|-------------|---------------------------------------------------------------------------------|
+| Sonarr | 8989        | `http://192.168.1.x:8989/sonarr/feed/v3/calendar/Sonarr.ics?apikey=YOUR_KEY`  |
+| Radarr | 7878        | `http://192.168.1.x:7878/radarr/feed/v3/calendar/Radarr.ics?apikey=YOUR_KEY`  |
+| Lidarr | 8686        | `http://192.168.1.x:8686/lidarr/feed/v3/calendar/Lidarr.ics?apikey=YOUR_KEY`  |
 
-Find your API key in each app under **Settings → General**.
+Find your API key in each app under **Settings → General → Security → API Key**.
 
-### 4 · Enable TMDB (optional but recommended)
+### 4. Enable TMDB (optional but recommended)
 
 1. Create a free account at [themoviedb.org](https://www.themoviedb.org)
-2. Go to **Settings → API** and copy your API key (v3 auth)
+2. Go to **Settings → API** and copy your v3 API key
 3. Paste it into **Settings → Integrations → TMDB Key**
+
+Without a TMDB key the calendar still works — you just won't get posters, trailers, or ratings.
 
 ---
 
-## Changing the port
+## Configuration
+
+### Change the port
 
 Edit `docker-compose.yml`:
 
 ```yaml
 ports:
-  - "8096:80"   # change 8096 to any free port
+  - "8096:80"   # change 8096 to any free port on your host
 ```
 
-Then restart:
+Then apply the change:
 
 ```bash
 docker compose up -d
 ```
 
+### All settings are persisted in the browser
+
+Server name, logo, feed URLs, TMDB key, and sync interval are all saved to `localStorage` — nothing is written to disk on the server. Clearing browser data resets them.
+
 ---
 
 ## Updating
-
-### If building locally
 
 ```bash
 git pull
 docker compose up -d --build
 ```
 
-### If using the GHCR image
-
-```yaml
-# docker-compose.yml
-image: ghcr.io/YOUR_USERNAME/arr-calendar:latest
-```
-
-```bash
-docker compose pull
-docker compose up -d
-```
-
----
-
-## GitHub Actions — auto-build on push
-
-The included workflow (`.github/workflows/docker.yml`) automatically builds and pushes a Docker image to GitHub Container Registry whenever you push to `main`.
-
-To enable it:
-
-1. Push this repo to GitHub
-2. The action runs automatically — no secrets needed (uses `GITHUB_TOKEN`)
-3. The image is published at `ghcr.io/YOUR_USERNAME/arr-calendar:latest`
-4. Switch `docker-compose.yml` to use the image instead of `build: .`
-
 ---
 
 ## How the CORS proxy works
 
-Browsers block cross-origin requests (different port = different origin). The nginx config includes a `/proxy?url=` endpoint that forwards iCal requests server-side, sidestepping CORS entirely.
+Browsers block requests to a different origin (different host or port counts as a different origin). The nginx config exposes a `/proxy?url=` endpoint that fetches iCal feeds server-side and relays them back, bypassing the browser restriction entirely.
 
-Your \*arr API keys are sent **only** from your server to your \*arr apps — they never leave your network.
+```
+Browser → GET /proxy?url=http%3A%2F%2F192.168.1.x%3A8989%2F...
+              ↓
+         nginx (same origin as the page)
+              ↓
+         Sonarr on your LAN
+```
+
+Your \*arr API keys travel only between your server and your \*arr apps — they never leave your network.
 
 ---
 
 ## Project structure
 
 ```
-arr-calendar/
-├── index.html              # The full app (single file, no build step)
+media-preview/
+├── index.html          # Full React app — no build step
 ├── nginx/
-│   └── default.conf        # nginx config with CORS proxy
-├── Dockerfile
-├── docker-compose.yml
-└── .github/
-    └── workflows/
-        └── docker.yml      # Auto-build + push to GHCR
+│   └── default.conf    # Static file serving + /proxy CORS endpoint + /health
+├── Dockerfile          # nginx:alpine image
+└── docker-compose.yml  # One-command deployment
 ```
 
 ---
