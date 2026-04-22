@@ -1,20 +1,10 @@
 services:
   arr-calendar:
-    build: .                      # build locally from Dockerfile
-    # --- OR pull pre-built from GitHub Container Registry ---
-    # image: ghcr.io/YOUR_GITHUB_USERNAME/arr-calendar:latest
+    image: ghcr.io/mrainone7p/media-preview:latest
+    #build: .                        # uncomment to build locally instead
     container_name: arr-calendar
-    restart: unless-stopped
+    environment:
+      TZ: "America/New_York"        # your timezone
     ports:
-      - "8096:80"                 # change 8096 to any free port you like
-    networks:
-      - arr-network
-
-  # ── Optional: uncomment if you want nginx to also reverse-proxy your *arr ──
-  # sonarr:
-  #   image: linuxserver/sonarr
-  #   ...
-
-networks:
-  arr-network:
-    driver: bridge
+      - "8096:80"                   # change 8096 to any free port
+    restart: unless-stopped

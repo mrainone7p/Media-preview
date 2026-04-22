@@ -26,20 +26,38 @@ A self-hosted media calendar that aggregates iCal feeds from Sonarr, Radarr, Lid
 
 - [Docker](https://docs.docker.com/get-docker/) and Docker Compose (v2 — `docker compose`)
 
-### 1. Clone the repo
+### Option A — add to your existing `docker-compose.yml`
+
+Paste this service block in alongside your other containers:
+
+```yaml
+  arr-calendar:
+    image: ghcr.io/mrainone7p/media-preview:latest
+    container_name: arr-calendar
+    environment:
+      TZ: "America/New_York"        # your timezone
+    ports:
+      - "8096:80"                   # change 8096 to any free port
+    restart: unless-stopped
+```
+
+Then run:
+
+```bash
+docker compose up -d arr-calendar
+```
+
+### Option B — standalone (clone + run)
 
 ```bash
 git clone https://github.com/mrainone7p/media-preview.git
 cd media-preview
-```
-
-### 2. Start the container
-
-```bash
 docker compose up -d
 ```
 
 Open **http://localhost:8096** in your browser (or replace `localhost` with your server's IP).
+
+> **No `PUID` / `PGID`?** This is a plain `nginx:alpine` image (not a LinuxServer image), so those variables don't apply. There's also nothing to mount — all your settings (feed URLs, TMDB key, etc.) are saved in the browser's `localStorage`, not on disk.
 
 ### 3. Add your \*arr feeds
 
@@ -87,6 +105,13 @@ Server name, logo, feed URLs, TMDB key, and sync interval are all saved to `loca
 ---
 
 ## Updating
+
+```bash
+docker compose pull arr-calendar
+docker compose up -d arr-calendar
+```
+
+If you cloned the repo and are building locally, use `--build` instead:
 
 ```bash
 git pull
