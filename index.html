@@ -5,17 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>*arr Calendar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0b0c10;--surface:#13141a;--surface2:#1c1d26;--surface3:#23242f;--border:#2a2b38;--text:#e8e9f0;--muted:#7a7b8e;--accent:#7c6fff}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+:root.light{--bg:#f4f6fb;--surface:#ffffff;--surface2:#f2f4fb;--surface3:#e8ecf7;--border:#d9deec;--text:#101423;--muted:#5f6880;--accent:#6558f5}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;transition:background .15s,color .15s}
 #app{display:flex;flex-direction:column;min-height:100vh}
 .header{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;border-bottom:1px solid var(--border);background:var(--surface);gap:12px;position:sticky;top:0;z-index:10}
 .logo{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
-.logo-img{height:26px;width:26px;object-fit:contain;border-radius:4px;flex-shrink:0}
-.logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo-img{height:40px;width:40px;object-fit:contain;border-radius:6px;flex-shrink:0}
+.logo-text{display:flex;align-items:baseline;gap:8px;min-width:0}
+.logo-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:23px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .logo-name em{color:var(--accent);font-style:normal}
+.logo-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nav{display:flex;gap:3px;flex-shrink:0}
 .nav-btn{background:transparent;border:1px solid transparent;color:var(--muted);padding:5px 12px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;transition:all .15s}
 .nav-btn.active{background:var(--surface2);border-color:var(--border);color:var(--text)}
@@ -25,7 +28,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 /* Calendar */
 .cal-page{padding:18px 22px}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.month-label{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:#fff}
+.month-label{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--text)}
 .month-nav{display:flex;gap:5px}
 .mnav{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:29px;height:29px;border-radius:6px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .mnav:hover{border-color:var(--accent);color:var(--accent)}
@@ -57,10 +60,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .ccard{display:flex;gap:26px;align-items:flex-start}
 .poster-wrap{flex-shrink:0;width:170px}
 .poster{width:170px;border-radius:9px;display:block;box-shadow:0 4px 24px rgba(0,0,0,.5)}
-.poster-ph{width:170px;height:255px;background:var(--surface2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:52px;color:var(--muted);border:1px solid var(--border)}
+.poster-ph{width:170px;height:255px;background:var(--surface2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:52px;color:var(--muted);border:1px solid var(--border)}
 .cright{flex:1;min-width:0}
 .feed-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;margin-bottom:9px}
-.ctitle{font-family:'Syne',sans-serif;font-weight:800;font-size:25px;color:#fff;line-height:1.15;margin-bottom:5px}
+.ctitle{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:25px;color:var(--text);line-height:1.15;margin-bottom:5px}
 .ep-label{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:9px}
 .cmeta{display:flex;flex-wrap:wrap;gap:10px;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;margin-bottom:13px;align-items:center}
 .star{color:#ffd166}
@@ -75,11 +78,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .avail-date{margin-top:14px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
 /* Settings */
 .settings-page{padding:18px 22px;max-width:680px}
-.settings-title{font-family:'Syne',sans-serif;font-weight:700;font-size:19px;color:#fff;margin-bottom:18px}
+.settings-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;color:var(--text);margin-bottom:18px}
 .slabel{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;margin-top:20px}
 .scard{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:4px}
 .irow{display:flex;gap:8px;align-items:center}
 .irow+.irow{margin-top:9px}
+.irow-name{align-items:flex-start}
+.name-wrap{display:flex;gap:8px;flex:1}
+.name-col{display:flex;flex-direction:column;gap:5px;flex:1}
+.mini-label{font-size:10px;color:var(--muted)}
 .flabel{font-size:11px;color:var(--muted);width:78px;flex-shrink:0}
 .tinput{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px 9px;font-family:'DM Sans',sans-serif;font-size:12px;outline:none;transition:border-color .15s}
 .tinput:focus{border-color:var(--accent)}
@@ -93,7 +100,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .feed-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
 .feed-name-row{display:flex;align-items:center;gap:7px}
 .fcdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.fninput{background:transparent;border:none;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;outline:none;width:150px}
+.fninput{background:transparent;border:none;color:var(--text);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;outline:none;width:150px}
 .fstat{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);display:flex;align-items:center;gap:4px}
 .furow{display:flex;gap:6px;margin-bottom:7px}
 .fuinput{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:5px 8px;font-family:'DM Mono',monospace;font-size:9.5px;outline:none;transition:border-color .15s}
@@ -240,8 +247,11 @@ function ContentModal({ev, tmdbKey, onClose}) {
 
   const cleanTitle = ev.title
     .replace(/\s+S\d{1,2}E\d{1,2}.*/i, '')
+    .replace(/\s*\((theatrical|digital|physical|streaming)\s+release\)/gi, '')
+    .replace(/\b(theatrical|digital|physical|streaming)\s+release\b/gi, '')
     .replace(/\s*\(4K\)/gi, '')
     .replace(/\s*\[.*?\]/g, '')
+    .replace(/\s{2,}/g, ' ')
     .trim();
 
   useEffect(() => {
@@ -363,7 +373,7 @@ function CalendarPage({feeds, allEvents, onRefresh, loading, onEventClick}) {
 }
 
 // ── SettingsPage ──────────────────────────────────────────────────────────────
-function SettingsPage({feeds, setFeeds, serverName, setServerName, serverLogo, setServerLogo, refreshInterval, setRefreshInterval, tmdbKey, setTmdbKey, onSave}) {
+function SettingsPage({feeds, setFeeds, serverName, setServerName, serverSubtext, setServerSubtext, serverLogo, setServerLogo, refreshInterval, setRefreshInterval, tmdbKey, setTmdbKey, themeMode, setThemeMode, onSave}) {
   const [dirty, setDirty] = useState(false);
   const fileRef = useRef(null);
   const el = React.createElement;
@@ -388,9 +398,18 @@ function SettingsPage({feeds, setFeeds, serverName, setServerName, serverLogo, s
     // Server identity
     el('div', {className:'slabel'}, 'Server Identity'),
     el('div', {className:'scard'},
-      el('div', {className:'irow'},
+      el('div', {className:'irow irow-name'},
         el('span', {className:'flabel'}, 'Name'),
-        el('input', {className:'tinput', value:serverName, placeholder:'*arr Calendar', onChange:e => { setServerName(e.target.value); setDirty(true); }}),
+        el('div', {className:'name-wrap'},
+          el('div', {className:'name-col'},
+            el('span', {className:'mini-label'}, 'Main title'),
+            el('input', {className:'tinput', value:serverName, placeholder:'*arr Calendar', onChange:e => { setServerName(e.target.value); setDirty(true); }}),
+          ),
+          el('div', {className:'name-col'},
+            el('span', {className:'mini-label'}, 'Subtext'),
+            el('input', {className:'tinput', value:serverSubtext, placeholder:'Now showing', onChange:e => { setServerSubtext(e.target.value); setDirty(true); }}),
+          ),
+        ),
       ),
       el('div', {className:'irow'},
         el('span', {className:'flabel'}, 'Logo'),
@@ -408,6 +427,14 @@ function SettingsPage({feeds, setFeeds, serverName, setServerName, serverLogo, s
         el('span', {className:'flabel'}, 'Interval'),
         el('select', {className:'tinput', style:{cursor:'pointer'}, value:refreshInterval, onChange:e => { setRefreshInterval(+e.target.value); setDirty(true); }},
           INTERVALS.map(({l, v}) => el('option', {key:v, value:v}, l)),
+        ),
+      ),
+      el('div', {className:'irow'},
+        el('span', {className:'flabel'}, 'Theme'),
+        el('select', {className:'tinput', style:{cursor:'pointer'}, value:themeMode, onChange:e => { setThemeMode(e.target.value); setDirty(true); }},
+          el('option', {value:'system'}, 'System'),
+          el('option', {value:'dark'}, 'Dark'),
+          el('option', {value:'light'}, 'Light'),
         ),
       ),
     ),
@@ -471,9 +498,11 @@ function App() {
   const [allEvents,       setAllEvents]       = useState([]);
   const [loading,         setLoading]         = useState(false);
   const [serverName,      setServerName]      = useState('');
+  const [serverSubtext,   setServerSubtext]   = useState('');
   const [serverLogo,      setServerLogo]      = useState(null);
   const [refreshInterval, setRefreshInterval] = useState(1440);
   const [tmdbKey,         setTmdbKey]         = useState('');
+  const [themeMode,       setThemeMode]       = useState('system');
   const feedsRef = useRef(feeds); feedsRef.current = feeds;
   const el = React.createElement;
 
@@ -512,9 +541,11 @@ function App() {
           const savedFeeds = s.feeds ? s.feeds.map(f => ({...f, events:[], status:'idle'})) : DEFAULT_FEEDS;
           if (s.feeds)           setFeeds(savedFeeds);
           if (s.serverName  !== undefined) setServerName(s.serverName);
+          if (s.serverSubtext !== undefined) setServerSubtext(s.serverSubtext);
           if (s.serverLogo  !== undefined) setServerLogo(s.serverLogo);
           if (s.refreshInterval)           setRefreshInterval(s.refreshInterval);
           if (s.tmdbKey     !== undefined) setTmdbKey(s.tmdbKey);
+          if (s.themeMode   !== undefined) setThemeMode(s.themeMode);
           await fetchFeeds(savedFeeds);
         } else {
           await fetchFeeds(DEFAULT_FEEDS);
@@ -530,11 +561,18 @@ function App() {
     return () => clearInterval(id);
   }, [refreshInterval]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const resolved = themeMode === 'system' ? (systemDark ? 'dark' : 'light') : themeMode;
+    root.classList.toggle('light', resolved === 'light');
+  }, [themeMode]);
+
   const saveAndSync = () => {
     try {
       localStorage.setItem('arr-cal-v2', JSON.stringify({
         feeds: feeds.map(f => ({...f, events:[], status:'idle'})),
-        serverName, serverLogo, refreshInterval, tmdbKey,
+        serverName, serverSubtext, serverLogo, refreshInterval, tmdbKey, themeMode,
       }));
     } catch(e) {}
     fetchFeeds(feeds);
@@ -542,7 +580,7 @@ function App() {
 
   const renderPage = () => {
     if (modal)              return el(ContentModal,  {key:modal.id, ev:modal, tmdbKey, onClose:() => setModal(null)});
-    if (page === 'settings') return el(SettingsPage,  {feeds, setFeeds, serverName, setServerName, serverLogo, setServerLogo, refreshInterval, setRefreshInterval, tmdbKey, setTmdbKey, onSave:saveAndSync});
+    if (page === 'settings') return el(SettingsPage,  {feeds, setFeeds, serverName, setServerName, serverSubtext, setServerSubtext, serverLogo, setServerLogo, refreshInterval, setRefreshInterval, tmdbKey, setTmdbKey, themeMode, setThemeMode, onSave:saveAndSync});
     return el(CalendarPage, {feeds, allEvents, onRefresh:() => fetchFeeds(feeds), loading, onEventClick:setModal});
   };
 
@@ -550,7 +588,10 @@ function App() {
     el('div', {className:'header'},
       el('div', {className:'logo'},
         serverLogo && el('img', {className:'logo-img', src:serverLogo, alt:''}),
-        el('span', {className:'logo-name'}, serverName || '*arr Calendar'),
+        el('div', {className:'logo-text'},
+          el('span', {className:'logo-name'}, serverName || '*arr Calendar'),
+          serverSubtext && el('span', {className:'logo-sub'}, serverSubtext),
+        ),
       ),
       el('div', {className:'nav'},
         el('button', {className:`nav-btn${page === 'calendar' && !modal ? ' active' : ''}`, onClick:() => { setPage('calendar'); setModal(null); }}, 'Calendar'),
