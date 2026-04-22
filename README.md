@@ -32,7 +32,7 @@ Paste this service block in alongside your other containers:
 
 ```yaml
   arr-calendar:
-    image: ghcr.io/mrainone7p/media-preview:latest
+    build: /path/to/media-preview   # path to where you cloned the repo
     container_name: arr-calendar
     environment:
       TZ: "America/New_York"        # your timezone

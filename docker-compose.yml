@@ -1,7 +1,7 @@
 services:
   arr-calendar:
-    image: ghcr.io/mrainone7p/media-preview:latest
-    #build: .                        # uncomment to build locally instead
+    build: .                        # builds from the local Dockerfile
+    #image: ghcr.io/mrainone7p/media-preview:latest  # uncomment once pushed to GHCR
     container_name: arr-calendar
     environment:
       TZ: "America/New_York"        # your timezone
